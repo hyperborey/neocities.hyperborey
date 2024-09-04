@@ -4,14 +4,16 @@
   "description": "",
   "main": "build-script.js",
   "scripts": {
-    "build": "tsc && node dist/build-script.js",
-    "start": "npm run build && npx serve dist"
+    "compile:src": "tsc",
+    "compile:build": "tsc build.ts --outDir .",
+    "build": "npm run compile:src && npm run compile:build && node build.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^16.11.12",
-    "typescript": "^4.5.2"
+    "@types/node": "^16.18.107",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5"
   }
 }
