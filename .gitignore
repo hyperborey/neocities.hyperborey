@@ -1,3 +1,4 @@
-.git
-.github
-README.md
+.git/
+.git/**
+dist/
+dist/**
