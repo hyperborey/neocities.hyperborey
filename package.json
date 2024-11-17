@@ -6,7 +6,7 @@
     "build": "ts-node scripts/build.ts",
     "watch": "ts-node scripts/watch.ts"
   },
-  "author": "BoreyDev",
+  "author": "hyprborey",
   "license": "ISC",
   "description": "",
   "devDependencies": {
