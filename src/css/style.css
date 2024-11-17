@@ -1,3 +1,4 @@
+@import "reset.css";
 @import "colors.css";
 
 .container {
@@ -33,4 +34,9 @@ body {
 
 main {
   width: 50rem;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
 }
