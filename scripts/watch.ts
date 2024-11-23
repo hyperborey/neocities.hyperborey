@@ -3,15 +3,15 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 function copy(f: string) {
-  const f_new = path.join('public', f.slice(4))
-  fs.cpSync(f, f_new, { recursive: true })
+  const fNew = path.join('public', f.slice(4))
+  fs.cpSync(f, fNew, { recursive: true })
 }
-const src_watcher = chokidar.watch('src', {
+const srcWatcher = chokidar.watch('src', {
   persistent: true
 });
 
 
-src_watcher
+srcWatcher
   .on('add',
     (path: string) => {
       console.log(`File ${path} has been added`);

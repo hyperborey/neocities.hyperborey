@@ -1,7 +1,7 @@
 import { log, error } from 'console';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parse_all } from "./blog"
+import { parseAll } from "./blog"
 
 const src_dir = 'src/'
 const public_dir = 'public/'
@@ -18,7 +18,7 @@ function main() {
     fs.cpSync(src_dir + files[index], public_dir + files[index], { recursive: true })
   }
 
-  parse_all()
+  parseAll()
 }
 
 main();
