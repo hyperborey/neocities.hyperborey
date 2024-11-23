@@ -187,6 +187,9 @@ export function parseAll() {
   const files = fs.readdirSync(PATHS.blog, { recursive: true });
   let blogs: Blog[] = []
 
+  if (!fs.existsSync(PATHS.public + PATHS.blog)) {
+    fs.mkdirSync(PATHS.public + PATHS.blog, { recursive: true });
+  }
 
   for (let index = 0; index < files.length; index++) {
     if (path.extname(files[index].toString()) != ".md") {
