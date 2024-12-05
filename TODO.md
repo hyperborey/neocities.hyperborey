@@ -18,6 +18,9 @@
 - [ ] Refactor the code and split it to modules (oh no)
 - [ ] Add watchers to every file
 
+# v1.4.0
+- [ ] Add icons to sidebar
+
 # Sometime in the future
 - [ ] Add blog list to every blog page
 - [ ] Add an ELD shader 
