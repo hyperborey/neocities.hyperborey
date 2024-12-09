@@ -26,6 +26,11 @@ export function getFrontmatter(content: string): Properties | null {
   return properties
 }
 
+/**
+ * Parses markdown to HTML tags.
+ * @param {string} input The string to parse
+ * @returns {string} Parsed HTML string
+ */
 export function parseMarkdown(input: string): string {
 
   let content: string | string[] = input.split("\n");
@@ -34,49 +39,48 @@ export function parseMarkdown(input: string): string {
   // This sucks ass
   // But works for now
   for (let index = 0; index < content.length; index++) {
-    if (content[index].startsWith("######")) {
-      content[index] = `<h6>${content[index].slice(6).trim()}</h6>`; // Remove "######" and wrap in <h6>
-    } else if (content[index].startsWith("#####")) {
-      content[index] = `<h5>${content[index].slice(5).trim()}</h5>`; // Remove "#####" and wrap in <h5>
-    } else if (content[index].startsWith("####")) {
-      content[index] = `<h4>${content[index].slice(4).trim()}</h4>`; // Remove "####" and wrap in <h4>
-    } else if (content[index].startsWith("###")) {
-      content[index] = `<h3>${content[index].slice(3).trim()}</h3>`; // Remove "###" and wrap in <h3>
-    } else if (content[index].startsWith("##")) {
-      content[index] = `<h2>${content[index].slice(2).trim()}</h2>`; // Remove "##" and wrap in <h2>
-    } else if (content[index].startsWith("#")) {
-      content[index] = `<h1>${content[index].slice(1).trim()}</h1>`; // Remove "#" and wrap in <h1>
+    const line = content[index];
 
-    } else if (content[index] === "") {
-      content[index] = "<br>"
+    if (REGEX.HEADERS.H6.test(line)) {
+      content[index] = `<h6>${line.replace(REGEX.HEADERS.H6, "$1").trim()}</h6>`;
+    } else if (REGEX.HEADERS.H5.test(line)) {
+      content[index] = `<h5>${line.replace(REGEX.HEADERS.H5, "$1").trim()}</h5>`;
+    } else if (REGEX.HEADERS.H4.test(line)) {
+      content[index] = `<h4>${line.replace(REGEX.HEADERS.H4, "$1").trim()}</h4>`;
+    } else if (REGEX.HEADERS.H3.test(line)) {
+      content[index] = `<h3>${line.replace(REGEX.HEADERS.H3, "$1").trim()}</h3>`;
+    } else if (REGEX.HEADERS.H2.test(line)) {
+      content[index] = `<h2>${line.replace(REGEX.HEADERS.H2, "$1").trim()}</h2>`;
+    } else if (REGEX.HEADERS.H1.test(line)) {
+      content[index] = `<h1>${line.replace(REGEX.HEADERS.H1, "$1").trim()}</h1>`;
+    } else if (REGEX.BR.test(line) && !isCode) {
+      content[index] = "<br>";
+    }
 
-    } else if (/^```/.test(content[index])) {  // Checks if the string starts with ```
+    else if (REGEX.CODE_BLOCK_START.test(content[index])) {  // Checks if the string starts with ```
       if (isCode) {
-        content[index] = content[index].replace(/^```/, "</pre>")
-        isCode = false
+        content[index] = content[index].replace(REGEX.CODE_BLOCK_START, "</pre>");
+        isCode = false;
       } else {
-        content[index] = content[index].replace(/^```/, "<pre>")
-        isCode = true
+        content[index] = content[index].replace(REGEX.CODE_BLOCK_START, "<pre>");
+        isCode = true;
       }
-      console.log(`isCode is now ${isCode} - ${content[index]}`)
+
     } else if (isCode) {  // Checks if isCode is true
-      console.log("isCode is true");
+
     } else {
-      content[index] = `<p>${content[index]}</p>`
+      content[index] = `<p>${content[index]}</p>`;
     }
 
     content[index] = content[index]
-      .replace(/\*\*\*(.*?)\*\*\*/g, "<em><strong>$1</strong></em>")
-      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      .replace(/\_(.*?)\_/g, "<em>$1</em>")
-      .replace(/\`(.*?)\`/g, "<code>$1</code>");
-
+      .replace(REGEX.BOLD_ITALIC, "<em><strong>$1</strong></em>")
+      .replace(REGEX.BOLD, "<strong>$1</strong>")
+      .replace(REGEX.ITALIC, "<em>$1</em>")
+      .replace(REGEX.UNDERLINE_ITALIC, "<em>$1</em>")
+      .replace(REGEX.CODE, "<code>$1</code>");
   }
 
-
   content = content.join("\n")
-
 
   return content
 
