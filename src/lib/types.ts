@@ -1,7 +1,7 @@
 import { LANG } from "./enums";
 
 export interface Blog {
-  properties: Properties
+  properties: Properties | null
   urlPath: string
   fileName: string
 }

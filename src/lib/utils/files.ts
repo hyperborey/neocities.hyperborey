@@ -5,7 +5,7 @@ import * as path from "path";
  * Creates .temp in the root of the project
  */
 export function mkTemp(): void {
-  const tempDir = path.resolve('./.temp'); 
+  const tempDir = path.resolve('./.temp');
 
   if (!fs.existsSync(tempDir)) {
     try {
@@ -21,7 +21,26 @@ export function mkTemp(): void {
 }
 
 export function rmTemp(): void {
-  if (fs.existsSync("./.temp")) {
-    fs.rmSync("./.temp", { recursive: true })
+  const tempDir = path.resolve('./.temp');
+
+  if (fs.existsSync(tempDir)) {
+    try {
+      fs.rmSync("./.temp", { recursive: true })
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(`Failed to delete temporary directory: ${error.message}`);
+      } else {
+        console.error(`Failed to delete temporary directory: ${String(error)}`);
+      }
+    }
+  } else {
+    console.warn("Can't delete temp folder if it doesn't exist.")
   }
+}
+
+export function getAllFromDir(path: string): string[] {
+
+
+
+  return []
 }

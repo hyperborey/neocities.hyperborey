@@ -17,6 +17,8 @@
 # v1.3.0
 - [ ] Refactor the code and split it to modules (oh no)
 - [ ] Add watchers to every file
+- [ ] Add debug flag to the build
+    - This is needed because blog URLs are absolute, hence on the live-server and Neocities they will differ
 
 # v1.4.0
 - [ ] Add icons to sidebar
@@ -26,6 +28,7 @@
 - [ ] Add an ELD shader 
 - [ ] Make blogs pop-up in the blog list page
     - Similar to the The Talos Principle terminal
+- [ ] Add "NEW!!" sign to new blog posts (<=7 days old)
 
 # Fix me!
 - [ ] How to make watch for blog list page
