@@ -1,15 +1,12 @@
+import { TEMP_DIR, TEMP_MAP } from "@lib/constants";
 import * as fs from "fs";
 import * as path from "path";
 
-/**
- * Creates .temp in the root of the project
- */
 export function mkTemp(): void {
-  const tempDir = path.resolve('./.temp');
 
-  if (!fs.existsSync(tempDir)) {
+  if (!fs.existsSync(TEMP_DIR)) {
     try {
-      fs.mkdirSync(tempDir);
+      fs.mkdirSync(TEMP_DIR);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Failed to create temporary directory: ${error.message}`);
@@ -21,9 +18,8 @@ export function mkTemp(): void {
 }
 
 export function rmTemp(): void {
-  const tempDir = path.resolve('./.temp');
 
-  if (fs.existsSync(tempDir)) {
+  if (fs.existsSync(TEMP_DIR)) {
     try {
       fs.rmSync("./.temp", { recursive: true })
     } catch (error: unknown) {
@@ -38,9 +34,37 @@ export function rmTemp(): void {
   }
 }
 
-export function getAllFromDir(path: string): string[] {
+export function addToTempMap(name: string, filePath: string, content: string): void {
 
+  mkTemp();
 
+  let mapData: Record<string, any>;
 
-  return []
+  if (fs.existsSync(TEMP_MAP)) {
+    const mapContent = fs.readFileSync(TEMP_MAP, 'utf8');
+
+    if (!mapContent.trim()) {
+      mapData = {}
+    } else {
+      mapData = JSON.parse(mapContent)
+    }
+    console.log("File exists map")
+  } else {
+    mapData = {};
+  }
+
+  console.log(TEMP_MAP)
+  console.log(JSON.stringify(mapData));
+
+  if (mapData[name] != null) {
+    console.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
+  }
+
+  fs.writeFileSync(path.join(TEMP_DIR, filePath), content)
+
+  mapData[name] = path.join(TEMP_DIR, filePath);
+
+  fs.writeFileSync(TEMP_MAP, JSON.stringify(mapData), 'utf8')
 }
+
+// TODO: Сделать функцию, которая получает путь к данным из TempMap
