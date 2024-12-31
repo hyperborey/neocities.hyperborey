@@ -22,4 +22,5 @@ export const REGEX = {
     H1: /^#\s*(.+)$/,
   },
   BR: /^$/,
+  COMPONENT: /@(\w+)/g,
 } as const;

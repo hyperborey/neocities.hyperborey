@@ -25,6 +25,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "pino": "^9.6.0",
     "yaml": "^2.6.1"
   }

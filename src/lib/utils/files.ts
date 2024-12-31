@@ -54,9 +54,6 @@ export function addToTempMap(name: string, filePath: string, content: string): v
     mapData = {};
   }
 
-  console.log(TEMP_MAP)
-  console.log(JSON.stringify(mapData));
-
   if (mapData[name] != null) {
     logger.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
   }
@@ -66,6 +63,35 @@ export function addToTempMap(name: string, filePath: string, content: string): v
   mapData[name] = path.join(TEMP_DIR, filePath);
 
   fs.writeFileSync(TEMP_MAP, JSON.stringify(mapData), 'utf8')
+}
+
+export function getFromTempMap(name: string): string | null {
+
+  let mapData: Record<string, any>;
+
+  if (fs.existsSync(TEMP_MAP)) {
+    const mapContent = fs.readFileSync(TEMP_MAP, 'utf8');
+
+    if (!mapContent.trim()) {
+      mapData = {}
+    } else {
+      mapData = JSON.parse(mapContent)
+    }
+  } else {
+    mapData = {};
+  }
+
+  if (mapData[name] == null) {
+    logger.warn(`In the temp map, there's no key ${name}!`)
+    return null
+  }
+
+  return mapData[name]
+
+}
+
+export function isFile(pathItem: string) {
+  return !!path.extname(pathItem);
 }
 
 // TODO: Сделать функцию, которая получает путь к данным из TempMap

@@ -1,12 +1,13 @@
 import { LANG } from "./enums";
+import { URL } from 'url'
 
 export interface Blog {
   properties: Properties | null
-  urlPath: string
+  urlPath: URL
   fileName: string
 }
 
-export interface Properties { 
+export interface Properties {
   title?: string
   date?: Date;
   branch?: string // Change later for enum or something
