@@ -1,6 +1,7 @@
 import { TEMP_DIR, TEMP_MAP } from "@lib/constants";
 import * as fs from "fs";
 import * as path from "path";
+import { logger } from "./logging";
 
 export function mkTemp(): void {
 
@@ -24,13 +25,13 @@ export function rmTemp(): void {
       fs.rmSync("./.temp", { recursive: true })
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error(`Failed to delete temporary directory: ${error.message}`);
+        logger.error(`Failed to delete temporary directory: ${error.message}`);
       } else {
-        console.error(`Failed to delete temporary directory: ${String(error)}`);
+        logger.error(`Failed to delete temporary directory: ${String(error)}`);
       }
     }
   } else {
-    console.warn("Can't delete temp folder if it doesn't exist.")
+    logger.warn("Can't delete temp folder if it doesn't exist.")
   }
 }
 
@@ -57,7 +58,7 @@ export function addToTempMap(name: string, filePath: string, content: string): v
   console.log(JSON.stringify(mapData));
 
   if (mapData[name] != null) {
-    console.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
+    logger.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
   }
 
   fs.writeFileSync(path.join(TEMP_DIR, filePath), content)
