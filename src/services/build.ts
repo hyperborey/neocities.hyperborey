@@ -7,7 +7,7 @@ import fs from 'fs'
 
 import minimist from "minimist";
 import { createBlogList } from "./components/blogList";
-import { render } from "./components/renderComponents";
+import { buildComponents } from "./components/componentBuilder";
 
 const args = minimist(process.argv.slice(2));
 const isDebug = args.debug === true;
@@ -23,7 +23,7 @@ export function build(): void {
   const blogList = createBlogList(blogs)
   addToTempMap("blogList", "blogList.html", blogList)
 
-  render()
+  buildComponents()
 
 }
 

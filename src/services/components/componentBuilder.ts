@@ -1,11 +1,11 @@
 import { STATIC_DIR } from '@lib/constants'
 import { REGEX } from '@lib/enums';
-import { isFile } from '@lib/utils/files';
+import { getFromTempMap, isFile } from '@lib/utils/files';
 import { logger } from '@lib/utils/logging';
 import fs from 'fs'
 import path from 'path'
 
-export function render() {
+export function buildComponents() {
 
   const staticFiles = fs.readdirSync(STATIC_DIR, { recursive: true })
 
@@ -16,21 +16,24 @@ export function render() {
       logger.debug(`${file} is not a file! Skipping.`)
       continue
     }
-    logger.debug(`${file} is a file.`)
+    logger.debug(`${file} is a file though`)
 
     let fileContent = fs.readFileSync(path.join(STATIC_DIR, file), 'utf8').toString()
-
-    logger.debug(fileContent)
-    logger.info("Start of the loop")
 
     let match;
     while ((match = REGEX.COMPONENT.exec(fileContent)) !== null) {
       logger.debug(`Full match: ${match[0].toString()}`); // Full match
       logger.debug(match[1]); // Capturing group (if any)
 
-      // Replace only the current match
-      fileContent = fileContent.replace(match[0], "");
-      logger.debug(fileContent);
+      const component = getFromTempMap(match[1])
+
+      if (component == null) {
+        logger.warn(`Component ${component} was not found!`)
+        fileContent = fileContent.replace(match[0], "");
+      } else {
+        fileContent = fileContent.replace(match[0], component);
+      }
+
     }
 
     // TODO: continue
