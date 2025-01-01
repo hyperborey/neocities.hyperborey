@@ -1,5 +1,5 @@
-import { STATIC_DIR } from '@lib/constants'
-import { REGEX } from '@lib/enums';
+import { BLOG_DIR, PUBLIC_DIR, STATIC_DIR } from '@lib/constants'
+import { REGEX } from '@lib/constants';
 import { getFromTempMap, isFile } from '@lib/utils/files';
 import { logger } from '@lib/utils/logging';
 import fs from 'fs'
@@ -12,11 +12,13 @@ export function buildComponents() {
   for (let i = 0; i < staticFiles.length; i++) {
     const file = staticFiles[i].toString();
 
+
     if (!isFile(file.toString())) {
-      logger.debug(`${file} is not a file! Skipping.`)
+      if (!fs.existsSync(path.join(PUBLIC_DIR, file))) {
+        fs.mkdirSync(path.join(PUBLIC_DIR, file), { recursive: true })
+      }
       continue
     }
-    logger.debug(`${file} is a file though`)
 
     let fileContent = fs.readFileSync(path.join(STATIC_DIR, file), 'utf8').toString()
 
@@ -31,10 +33,17 @@ export function buildComponents() {
         logger.warn(`Component ${component} was not found!`)
         fileContent = fileContent.replace(match[0], "");
       } else {
-        fileContent = fileContent.replace(match[0], component);
+        const componentContent = fs.readFileSync(component)
+        fileContent = fileContent.replace(match[0], componentContent.toString());
       }
 
+      if (!fs.existsSync(PUBLIC_DIR)) {
+        fs.mkdirSync(PUBLIC_DIR)
+
+      }
     }
+
+    fs.writeFileSync(path.join(PUBLIC_DIR, file), fileContent, 'utf8')
 
     // TODO: continue
 

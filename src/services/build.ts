@@ -18,10 +18,10 @@ export function build(): void {
   logger.info("Build service is run...")
 
   const blogs: Blog[] = collectBlogData(websiteUrl)
-  addToTempMap("blogFrontmatter", "blogFrontmatter.json", JSON.stringify(blogs))
+  addToTempMap("blogFrontmatter", JSON.stringify(blogs))
 
   const blogList = createBlogList(blogs)
-  addToTempMap("blogList", "blogList.html", blogList)
+  addToTempMap("blogList", blogList)
 
   buildComponents()
 

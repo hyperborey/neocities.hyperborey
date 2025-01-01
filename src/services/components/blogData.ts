@@ -19,9 +19,13 @@ export function collectBlogData(websiteURL: URL): Blog[] {
     const blogFile = fs.readFileSync(blogFilePath, 'utf-8');
     const blogFrontmatter = getFrontmatter(blogFile)
 
+    const newUrlPath = new URL(`${BLOG_URL}/${blogFrontmatter?.title?.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s+/g, '-')}`, websiteURL)
+
+
     const blog: Blog = {
-      fileName: path.resolve(blogFilePath),
-      urlPath: new URL(`${BLOG_URL}/${blogDir[i]}`, websiteURL),
+      fileName: blogDir[i],
+      urlPath: newUrlPath,
       properties: blogFrontmatter
     }
 

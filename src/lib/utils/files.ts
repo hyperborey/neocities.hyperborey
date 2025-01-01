@@ -35,7 +35,9 @@ export function rmTemp(): void {
   }
 }
 
-export function addToTempMap(name: string, filePath: string, content: string): void {
+export function addToTempMap(name: string, contentPath: string): void {
+
+  name = name.toLowerCase()
 
   mkTemp();
 
@@ -58,14 +60,16 @@ export function addToTempMap(name: string, filePath: string, content: string): v
     logger.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
   }
 
-  fs.writeFileSync(path.join(TEMP_DIR, filePath), content)
+  fs.writeFileSync(path.join(TEMP_DIR, name.toLowerCase()), contentPath)
 
-  mapData[name] = path.join(TEMP_DIR, filePath);
+  mapData[name] = path.join(TEMP_DIR, name.toLowerCase());
 
   fs.writeFileSync(TEMP_MAP, JSON.stringify(mapData), 'utf8')
 }
 
-export function getFromTempMap(name: string): string | null {
+export function getFromTempMap(name: string): string | undefined {
+
+  name = name.toLowerCase()
 
   let mapData: Record<string, any>;
 
@@ -83,7 +87,7 @@ export function getFromTempMap(name: string): string | null {
 
   if (mapData[name] == null) {
     logger.warn(`In the temp map, there's no key ${name}!`)
-    return null
+    return undefined
   }
 
   return mapData[name]
@@ -93,5 +97,3 @@ export function getFromTempMap(name: string): string | null {
 export function isFile(pathItem: string) {
   return !!path.extname(pathItem);
 }
-
-// TODO: Сделать функцию, которая получает путь к данным из TempMap

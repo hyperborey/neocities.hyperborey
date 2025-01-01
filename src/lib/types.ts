@@ -1,4 +1,4 @@
-import { LANG } from "./enums";
+import { LANG } from "@lib/constants";
 import { URL } from 'url'
 
 export interface Blog {

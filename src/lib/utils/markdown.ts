@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { REGEX } from '../enums'
+import { REGEX } from '../constants'
 import * as yaml from "yaml"
 import { Properties } from '../types'
 
