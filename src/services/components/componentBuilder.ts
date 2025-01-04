@@ -1,5 +1,4 @@
-import { BLOG_DIR, PUBLIC_DIR, STATIC_DIR } from '@lib/constants'
-import { REGEX } from '@lib/constants';
+import { REGEX, STATIC, PUBLIC } from '@lib/constants';
 import { getFromTempMap, isFile } from '@lib/utils/files';
 import { logger } from '@lib/utils/logging';
 import fs from 'fs'
@@ -7,20 +6,20 @@ import path from 'path'
 
 export function buildComponents() {
 
-  const staticFiles = fs.readdirSync(STATIC_DIR, { recursive: true })
+  const staticFiles = fs.readdirSync(STATIC.DIR, { recursive: true })
 
   for (let i = 0; i < staticFiles.length; i++) {
     const file = staticFiles[i].toString();
 
 
     if (!isFile(file.toString())) {
-      if (!fs.existsSync(path.join(PUBLIC_DIR, file))) {
-        fs.mkdirSync(path.join(PUBLIC_DIR, file), { recursive: true })
+      if (!fs.existsSync(path.join(PUBLIC.DIR, file))) {
+        fs.mkdirSync(path.join(PUBLIC.DIR, file), { recursive: true })
       }
       continue
     }
 
-    let fileContent = fs.readFileSync(path.join(STATIC_DIR, file), 'utf8').toString()
+    let fileContent = fs.readFileSync(path.join(STATIC.DIR, file), 'utf8').toString()
 
     let match;
     while ((match = REGEX.COMPONENT.exec(fileContent)) !== null) {
@@ -37,15 +36,13 @@ export function buildComponents() {
         fileContent = fileContent.replace(match[0], componentContent.toString());
       }
 
-      if (!fs.existsSync(PUBLIC_DIR)) {
-        fs.mkdirSync(PUBLIC_DIR)
+      if (!fs.existsSync(PUBLIC.DIR)) {
+        fs.mkdirSync(PUBLIC.DIR)
 
       }
     }
 
-    fs.writeFileSync(path.join(PUBLIC_DIR, file), fileContent, 'utf8')
-
-    // TODO: continue
+    fs.writeFileSync(path.join(PUBLIC.DIR, file), fileContent, 'utf8')
 
   }
 

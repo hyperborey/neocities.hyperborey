@@ -1,13 +1,14 @@
-import { TEMP_DIR, TEMP_MAP } from "@lib/constants";
+import { TEMP } from "@lib/constants";
 import * as fs from "fs";
 import * as path from "path";
 import { logger } from "./logging";
 
+// TODO: This can be removed if I use recursed to create tempMap
 export function mkTemp(): void {
 
-  if (!fs.existsSync(TEMP_DIR)) {
+  if (!fs.existsSync(TEMP.DIR)) {
     try {
-      fs.mkdirSync(TEMP_DIR);
+      fs.mkdirSync(TEMP.DIR);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(`Failed to create temporary directory: ${error.message}`);
@@ -20,7 +21,7 @@ export function mkTemp(): void {
 
 export function rmTemp(): void {
 
-  if (fs.existsSync(TEMP_DIR)) {
+  if (fs.existsSync(TEMP.DIR)) {
     try {
       fs.rmSync("./.temp", { recursive: true })
     } catch (error: unknown) {
@@ -43,8 +44,8 @@ export function addToTempMap(name: string, contentPath: string): void {
 
   let mapData: Record<string, any>;
 
-  if (fs.existsSync(TEMP_MAP)) {
-    const mapContent = fs.readFileSync(TEMP_MAP, 'utf8');
+  if (fs.existsSync(TEMP.MAP)) {
+    const mapContent = fs.readFileSync(TEMP.MAP, 'utf8');
 
     if (!mapContent.trim()) {
       mapData = {}
@@ -60,11 +61,11 @@ export function addToTempMap(name: string, contentPath: string): void {
     logger.warn(`In the temp map, there's already a key ${name}, it's going to be overwritten!`);
   }
 
-  fs.writeFileSync(path.join(TEMP_DIR, name.toLowerCase()), contentPath)
+  fs.writeFileSync(path.join(TEMP.DIR, name.toLowerCase()), contentPath)
 
-  mapData[name] = path.join(TEMP_DIR, name.toLowerCase());
+  mapData[name] = path.join(TEMP.DIR, name.toLowerCase());
 
-  fs.writeFileSync(TEMP_MAP, JSON.stringify(mapData), 'utf8')
+  fs.writeFileSync(TEMP.MAP, JSON.stringify(mapData), 'utf8')
 }
 
 export function getFromTempMap(name: string): string | undefined {
@@ -73,8 +74,8 @@ export function getFromTempMap(name: string): string | undefined {
 
   let mapData: Record<string, any>;
 
-  if (fs.existsSync(TEMP_MAP)) {
-    const mapContent = fs.readFileSync(TEMP_MAP, 'utf8');
+  if (fs.existsSync(TEMP.MAP)) {
+    const mapContent = fs.readFileSync(TEMP.MAP, 'utf8');
 
     if (!mapContent.trim()) {
       mapData = {}

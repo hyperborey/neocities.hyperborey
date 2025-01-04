@@ -5,13 +5,7 @@ import path from 'path'
 
 export function createBlogList(blogs: Blog[]): string {
 
-  // <tr> - header
-  //  <th>
-  // <tr>
-  //  <td>
-
   let content: string[] | string = []
-
 
   content.push(`<table>`)
   content.push(`<thead>`)

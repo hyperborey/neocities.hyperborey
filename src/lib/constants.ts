@@ -1,54 +1,115 @@
-// TODO: Change Host, Paths, Static to enums
-
+import minimist from "minimist";
 import path from "path";
 import { URL } from "url"
 
-// HOST
-export const LIVESERVER_URL = new URL("http://127.0.0.1:40001")
-export const NEOCITIES_URL = new URL("https://borey.neocities.org")
+const args = minimist(process.argv.slice(2));
+const isDebug = args.debug === true;
 
+export const BASE_URL = isDebug
+  ? new URL("http://127.0.0.1:40001")
+  : new URL("https://borey.neocities.org");
 
-// WEBSITE URLS
-// (they go after HOST url)
-export const BLOG_URL = "blog"
+export const URLS = {
+  MAIN: new URL("./index.html", BASE_URL),
+  BLOG: {
+    INDEX: new URL("./blog/index.html", BASE_URL),
+    EN: new URL("./blog/en", BASE_URL),
+    RU: new URL("./blog/ru", BASE_URL)
+  }
+}
 
-// PATHS
-export const TEMP_DIR = path.resolve(".temp/")
-export const TEMP_MAP = path.join(TEMP_DIR, "map.json")
+export const TEMP = {
+  DIR: path.resolve("./.temp"),
+  MAP: path.resolve("./.temp/map.json")
+}
 
-// RESOURCES
-export const BLOG_DIR = path.resolve("content/blog/en") // HACK: Поменять потом на RU и EN
-export const PUBLIC_DIR = path.resolve("public/")
+export const CONTENT = {
+  DIR: path.resolve("./content"),
+  BLOG: {
+    EN: path.resolve("./content/blog/en"),
+    RU: path.resolve("./content/blog/ru")
+  }
+}
 
-// STATIC
-export const STATIC_DIR = path.resolve("./src/static")
-export const STATIC_BLOG_DIR = path.join(STATIC_DIR, "blog")
-export const STATIC_BLOG_PAGE = path.join(STATIC_DIR, STATIC_BLOG_DIR, "index.html")
+export const PUBLIC = {
+  DIR: path.resolve("./public"),
+  BLOG: {
+    DIR: path.resolve("./src/public/blog"),
+    PAGE: path.resolve("./src/public/blog/index.html")
+  }
+}
 
-// ENUMS
+export const STATIC = {
+  DIR: path.resolve("./src/static"),
+  BLOG: {
+    DIR: path.resolve("./src/static/blog"),
+    PAGE: path.resolve("./src/static/blog/index.html")
+  }
+};
+
 export const LANG = {
   EN: "en",
   RU: "ru"
-} as const
+}
 
 export const REGEX = {
+  BOLD_ITALIC: {
+    pattern: /\*\*\*(.*?)\*\*\*/g,
+    replacement: "<strong><em>$1</em></strong>",
+  },
+  BOLD: {
+    pattern: /\*\*(.*?)\*\*/g,
+    replacement: "<strong>$1</strong>",
+  },
+  ITALIC: {
+    pattern: /\*(.*?)\*/g,
+    replacement: "<em>$1</em>",
+  },
+  CODE: {
+    pattern: /\`(.*?)\`/g,
+    replacement: "<code>$1</code>",
+    class: "codeblock" // TODO: This is example, I'll delete it later
+  },
+  CODE_BLOCK_START: {
+    pattern: /^```(\w*)\n/,
+    replacement: "<pre><code>",
+  },
+  CODE_BLOCK_END: {
+    pattern: /^```/,
+    replacement: "</code></pre>",
+  },
+  EMPTY_LINE: {
+    pattern: /^$/,
+    replacement: "<br>",
+  },
+  HEADERS: {
+    H6: {
+      pattern: /^######\s*(.+)$/,
+      replacement: "<h6>$1</h6>",
+    },
+    H5: {
+      pattern: /^#####\s*(.+)$/,
+      replacement: "<h5>$1</h5>",
+    },
+    H4: {
+      pattern: /^####\s*(.+)$/,
+      replacement: "<h4>$1</h4>",
+    },
+    H3: {
+      pattern: /^###\s*(.+)$/,
+      replacement: "<h3>$1</h3>",
+    },
+    H2: {
+      pattern: /^##\s*(.+)$/,
+      replacement: "<h2>$1</h2>",
+    },
+    H1: {
+      pattern: /^#\s*(.+)$/,
+      replacement: "<h1>$1</h1>",
+    },
+  },
+
+  COMPONENT: /\[component:(.*?)\]/,
   PROPERTY: /^(\w+):\s*(.+)$/gm,
   FRONTMATTER: /^---\n([\s\S]*?)\n---/,
-  BOLD_ITALIC: /\*\*\*(.*?)\*\*\*/g,
-  BOLD: /\*\*(.*?)\*\*/g,
-  ITALIC: /\*(.*?)\*/g,
-  UNDERLINE_ITALIC: /\_(.*?)\_/g,
-  CODE: /\`(.*?)\`/g,
-  CODE_BLOCK_START: /^```/,
-  EMPTY_LINE: /^$/,
-  HEADERS: {
-    H6: /^######\s*(.+)$/,
-    H5: /^#####\s*(.+)$/,
-    H4: /^####\s*(.+)$/,
-    H3: /^###\s*(.+)$/,
-    H2: /^##\s*(.+)$/,
-    H1: /^#\s*(.+)$/,
-  },
-  BR: /^$/,
-  COMPONENT: /\[component:(.*?)\]/,
-} as const;
+};
