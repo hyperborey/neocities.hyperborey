@@ -2,6 +2,11 @@ import minimist from "minimist";
 import path from "path";
 import { URL } from "url"
 
+// Unions
+export type TEMP_CATEGORY = "component" | "data";
+export type LANG = "ru" | "en";
+
+// Urls
 const args = minimist(process.argv.slice(2));
 const isDebug = args.debug === true;
 
@@ -18,9 +23,12 @@ export const URLS = {
   }
 }
 
+// Paths
 export const TEMP = {
   DIR: path.resolve("./.temp"),
-  MAP: path.resolve("./.temp/map.json")
+  MAP: path.resolve("./.temp/map.json"),
+  COMPONENTS: path.resolve("./.temp/component/"),
+  DATA: path.resolve("./.temp/data/")
 }
 
 export const CONTENT = {
@@ -34,8 +42,9 @@ export const CONTENT = {
 export const PUBLIC = {
   DIR: path.resolve("./public"),
   BLOG: {
-    DIR: path.resolve("./src/public/blog"),
-    PAGE: path.resolve("./src/public/blog/index.html")
+    EN: path.resolve("./public/blog/en/"),
+    RU: path.resolve("./public/blog/ru/"),
+    PAGE: path.resolve("./public/blog/index.html")
   }
 }
 
@@ -47,9 +56,8 @@ export const STATIC = {
   }
 };
 
-export const LANG = {
-  EN: "en",
-  RU: "ru"
+export const SRC = {
+  TEMPLATES: path.resolve("./src/services/components/templates")
 }
 
 export const REGEX = {
@@ -71,7 +79,7 @@ export const REGEX = {
     class: "codeblock" // TODO: This is example, I'll delete it later
   },
   CODE_BLOCK_START: {
-    pattern: /^```(\w*)\n/,
+    pattern: /^\s*```(\w*)/,
     replacement: "<pre><code>",
   },
   CODE_BLOCK_END: {
@@ -109,7 +117,7 @@ export const REGEX = {
     },
   },
 
-  COMPONENT: /\[component:(.*?)\]/,
+  COMPONENT: /\[component:(.*?)\]/g,
   PROPERTY: /^(\w+):\s*(.+)$/gm,
   FRONTMATTER: /^---\n([\s\S]*?)\n---/,
 };

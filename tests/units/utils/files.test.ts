@@ -1,4 +1,4 @@
-import { addToTempMap, getFromTempMap } from "@lib/utils/files";
+import { addToTemp, getFromTemp } from "@lib/utils/files";
 import fs from 'fs'
 import path from 'path'
 import mockFs from 'mock-fs';
@@ -29,20 +29,19 @@ describe('tempMap functions', () => {
     const input = '<p>This is a test component!</p>'
     const expected = input
 
-    addToTempMap("test", input)
+    addToTemp("test", input, "data")
 
-    const k = getFromTempMap("test")
+    const k = getFromTemp("test", "data")
 
     expect(k).toBeDefined();
 
-    const result = fs.readFileSync(path.resolve(k!)).toString()
 
-    expect(result).toEqual(expected);
+    expect(k).toEqual(expected);
   })
 
   it("should return undefined if key doesn't exists", () => {
-    addToTempMap("test", "test")
-    const result = getFromTempMap("does-not-exist!")
+    addToTemp("test", "test", "data")
+    const result = getFromTemp("does-not-exist!", "data")
 
     expect(result).toBeUndefined()
   });

@@ -1,4 +1,4 @@
-import { getFrontmatter, parseMarkdown } from "@lib/utils/markdown"
+import { getFrontmatter, parseMarkdown } from "./src/services/components/"
 import { Properties } from "@lib/types";
 import * as fs from "fs"
 
