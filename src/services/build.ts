@@ -26,5 +26,6 @@ export function build(): void {
 
 }
 
-
-build();
+if (require.main === module) {
+  build();
+}

@@ -142,6 +142,7 @@ export function ensureDirExists(dir: string): void {
  */
 export function ensureDirRemoved(dir: string): void {
   if (fs.existsSync(dir)) {
+    logger.debug(`Dir ${dir} does exists, deleting...`)
     fs.rmSync(dir, { recursive: true });
   }
 }

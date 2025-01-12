@@ -5,7 +5,7 @@
   "scripts": {
     "build": "ts-node --project ./tsconfig.json -r tsconfig-paths/register src/services/build.ts",
     "build:debug": "ts-node --project ./tsconfig.json -r tsconfig-paths/register src/services/build.ts --debug",
-    "watch": "ts-node --project ./tsconfig.json -r tsconfig-paths/register src/services/watch.ts"
+    "watch": "ts-node --project ./tsconfig.json -r tsconfig-paths/register src/services/watch.ts --debug"
   },
   "author": "hyprborey",
   "license": "ISC",
