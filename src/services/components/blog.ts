@@ -28,10 +28,8 @@ export function buildBlogs() {
 
     // Remove front matter from the .md file
     blogContent = blogContent.replace(REGEX.FRONTMATTER, "")
-
     blogContent = blogContent.split('\n')
 
-    // Inline markdown
     let states = {
       codeBlock: false
     }
@@ -45,19 +43,9 @@ export function buildBlogs() {
         startCodeBlock: line.startsWith('```')
       }
 
-      logger.debug('line')
-      logger.debug(line)
-      logger.debug('checks')
-      logger.debug(checks)
-      logger.debug('states')
-      logger.debug(states)
-
       if (checks.startCodeBlock && !states.codeBlock) { // Start of the codeblock
-        logger.debug(`before ${line}`)
-        logger.error(line.match(REGEX.CODE_BLOCK_START.pattern))
         line = line.replace(REGEX.CODE_BLOCK_START.pattern, REGEX.CODE_BLOCK_START.replacement)
         states.codeBlock = true
-        logger.debug(`after ${line}`)
 
       } else if (checks.startCodeBlock && states.codeBlock) { // End of the codeblock
         line = line.replace(REGEX.CODE_BLOCK_END.pattern, REGEX.CODE_BLOCK_END.replacement)
@@ -84,8 +72,6 @@ export function buildBlogs() {
           .replace(REGEX.CODE.pattern, REGEX.CODE.replacement)
       }
 
-
-
       blogContent[j] = line
     }
 
@@ -95,8 +81,15 @@ export function buildBlogs() {
       fs.mkdirSync(PUBLIC.BLOG.EN, { recursive: true })
     }
 
-    const blogTemplate = fs.readFileSync(path.join(SRC.TEMPLATES, "blog.html"), 'utf8')
-    const blogPage = insertComponent(blogTemplate, "blog", blogContent)
+    let blogTemplate = fs.readFileSync(path.join(SRC.TEMPLATES, "blog.html"), 'utf8')
+
+    const blogPage = blogTemplate.replace(REGEX.COMPONENT, (match, componentName) => {
+      if (componentName === "blog") {
+        return insertComponent(match, "blog", blogContent)
+      }
+      return insertComponent(match, componentName);
+    });
+
 
     fs.writeFileSync(path.join(PUBLIC.BLOG.EN, `${blog?.properties?.titleSlug || "null"}.html`), blogPage, 'utf8')
 

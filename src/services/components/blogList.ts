@@ -21,8 +21,7 @@ export function createBlogList(): void {
     const date = dayjs(blog.properties?.date).format('D/M/YYYY')
 
     table.push(
-      `
-      <tr>
+      `<tr>
         <td>
           <a href="${blog.urlPath}.html">
             ${blog.properties?.title}
@@ -31,8 +30,7 @@ export function createBlogList(): void {
         <td>
           ${date}
         </td>
-      </tr>
-      `)
+      </tr>`)
   }
 
   const component = `

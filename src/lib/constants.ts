@@ -56,6 +56,10 @@ export const STATIC = {
   }
 };
 
+export const CONFIG = {
+  SIDEBAR: path.resolve("./configuration/sidebar.toml")
+}
+
 export const SRC = {
   TEMPLATES: path.resolve("./src/services/components/templates")
 }
