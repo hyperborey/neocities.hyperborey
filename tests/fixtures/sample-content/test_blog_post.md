@@ -1,5 +1,5 @@
 ---
-title: "What is Placeholder Text?"
+title: "What is a placeholder text?"
 language: "en"
 date: "2024-11-27"
 branch: "test"

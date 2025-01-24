@@ -1,12 +1,13 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} **/
 module.exports = {
-  testEnvironment: "node",  // Using the Node environment for tests
+  testEnvironment: "node",
   transform: {
-    "^.+.tsx?$": ["ts-jest", {}],  // Use ts-jest for transforming TypeScript files
+    "^.+.tsx?$": ["ts-jest", {}],
   },
   moduleNameMapper: {
-    "^@lib/(.*)$": "<rootDir>/src/lib/$1",  // Resolve @lib to src/lib
-    "^@/(.*)$": "<rootDir>/$1"               // Resolve @ to the root directory
+    "^@lib/(.*)$": "<rootDir>/src/lib/$1",
+    "^@managers/(.*)$": "<rootDir>/src/services/managers/$1",
+    "^@/(.*)$": "<rootDir>/$1"
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],  // Include .ts, .tsx, .js, .json extensions
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
 };

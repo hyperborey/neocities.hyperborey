@@ -1,11 +1,6 @@
 import { BASE_URL } from "@lib/constants";
-import { addToTemp } from "@lib/utils/files";
 
-export function buildHeader() {
-
-
+export function buildHeader(): string {
   const component = `<header><a href="${BASE_URL}">neocities.borey</a></header>`
-
-  addToTemp('header', component, 'component')
-
+  return component
 }

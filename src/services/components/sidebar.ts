@@ -1,10 +1,8 @@
 import { BASE_URL, CONFIG } from '@lib/constants'
 import toml from 'toml'
 import fs from 'fs'
-import { logger } from '@lib/utils/logging'
-import { addToTemp } from '@lib/utils/files'
 
-export function buildSidebar(): void {
+export function buildSidebar(): string {
 
   const configuration = toml.parse(fs.readFileSync(CONFIG.SIDEBAR, 'utf8'))
   let options: string[] = []
@@ -28,6 +26,6 @@ ${options.join('\n')}
     </ul>
     </aside>`;
 
-  addToTemp('sidebar', component, 'component')
+  return component
 
 }

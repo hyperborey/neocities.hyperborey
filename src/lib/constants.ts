@@ -3,7 +3,6 @@ import path from "path";
 import { URL } from "url"
 
 // Unions
-export type TEMP_CATEGORY = "component" | "data";
 export type LANG = "ru" | "en";
 
 // Urls
@@ -34,6 +33,7 @@ export const TEMP = {
 export const CONTENT = {
   DIR: path.resolve("./content"),
   BLOG: {
+    DIR: path.resolve("./content/blog"),
     EN: path.resolve("./content/blog/en"),
     RU: path.resolve("./content/blog/ru")
   }
@@ -42,9 +42,22 @@ export const CONTENT = {
 export const PUBLIC = {
   DIR: path.resolve("./public"),
   BLOG: {
+    DIR: path.resolve("./public/blog"),
     EN: path.resolve("./public/blog/en/"),
     RU: path.resolve("./public/blog/ru/"),
     PAGE: path.resolve("./public/blog/index.html")
+  }
+}
+
+export const TESTS = {
+  DIR: path.resolve("./tests"),
+  UNITS: {
+    MANAGERS: path.resolve("./tests/units/managers"),
+    UTILS: path.resolve("./tests/units/utils"),
+  },
+  FIXTURES: {
+    PROJECT_FILES: path.resolve("./tests/fixtures/project-files"),
+    SAMPLE_CONTENT: path.resolve("./tests/fixtures/sample-content")
   }
 }
 

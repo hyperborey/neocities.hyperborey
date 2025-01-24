@@ -1,28 +1,20 @@
-import { addToTemp } from "@lib/utils/files";
-import { collectBlogData } from "./components/blogData";
-import { logger } from "@lib/utils/logging"
 
-import { createBlogList } from "./components/blogList";
-import { buildStatic } from "./components/static";
-import { buildBlogs } from "./components/blog";
-import { buildSidebar } from "./components/sidebar";
-import { buildHeader } from "./components/header";
+import { logger } from "@lib/utils/logging"
+import { BlogManager } from "@managers/BlogManager";
+import { StorageManager } from "@managers/StorageManager";
 
 export function build(): void {
+  const storageManager: StorageManager = new StorageManager();
+  const blogManager: BlogManager = new BlogManager(storageManager)
 
   logger.info("Build service is run...")
 
-  // Common components
-  buildSidebar()
-  buildHeader()
+  // This is even worse than previous code I've wrote, what the fuck
+  storageManager.buildAllComponents()
+  blogManager.createBlogListComponent()
 
-  // Blogs
-  collectBlogData()
-  createBlogList()
-  buildBlogs()
-
-  // Static
-  buildStatic()
+  storageManager.buildStatic()
+  blogManager.buildAllBlogs()
 
 }
 
