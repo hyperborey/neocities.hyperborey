@@ -1,30 +1,44 @@
 import { CONTENT, PUBLIC, REGEX, SRC, URLS } from "@lib/constants";
-import { StorageManager } from "./StorageManager";
+import { storageManager } from "./StorageManager";
 import { ensureDirExists, getFirstWords, isFile } from "@lib/utils/files";
-import { Blog, Properties } from "@lib/types";
+import { logger } from "@lib/utils/logging";
 
 import fs from 'fs'
 import yaml from 'yaml'
 import slugify from "slugify";
 import path from 'path'
-import { logger } from "@lib/utils/logging";
 import dayjs from "dayjs";
-import { warn } from "console";
+
+interface Blog {
+  properties: Properties | null
+  urlTitleSlug: string
+  urlPath: URL
+  fileName: string
+  publicFilePath: string
+  contentFilePath: string
+}
+
+interface Properties {
+  title?: string
+  date?: Date;
+  branch?: string // Change later for enum or something
+  language?: string
+  tags?: string[]
+}
 
 export class BlogManager {
-  blogs: Blog[]
-  storageManager: StorageManager
+  private blogs: Blog[]
 
-  constructor(StorageManager: StorageManager) {
-    this.storageManager = StorageManager
-    this.blogs = this.getAllBlogsInfo()
+  constructor() {
+    this.blogs = []
+    this.updateAllBlogsInfo()
   }
 
   /**
    * Retrieves all available blogs from the CONTENT.BLOG.DIR directory.
    * @returns An array of Blog structures containing information about each blog.
    */
-  public getAllBlogsInfo(): Blog[] {
+  public updateAllBlogsInfo() {
     const blogList = fs.readdirSync(CONTENT.BLOG.DIR, { encoding: 'utf8', recursive: true })
     let allBlogsInfo: Blog[] = []
 
@@ -43,10 +57,25 @@ export class BlogManager {
       }
     }
 
-    return allBlogsInfo
+    this.blogs = allBlogsInfo
   }
 
+
   public updateBlogInfo(blogPath: string) {
+    const blogInfo = this.getBlogInfo(blogPath)
+    const blogFileName = path.basename(blogPath)
+
+    if (!blogInfo) {
+      return
+    }
+
+    const index = this.blogs.findIndex(blog => blog.fileName === blogFileName);
+
+    if (index !== -1) {
+      this.blogs[index] = blogInfo;
+    } else {
+      this.blogs.push(blogInfo);
+    }
 
   }
 
@@ -129,7 +158,7 @@ export class BlogManager {
   </table>
   `
 
-    this.storageManager.addToTemp("blogList", component, "components")
+    storageManager.addToTemp("blogList", component, "components")
 
   }
 
@@ -229,10 +258,12 @@ export class BlogManager {
     let blogPage = fs.readFileSync(path.join(SRC.TEMPLATES, "blog.html"), 'utf8')
 
 
-    blogPage = this.storageManager.insertAllComponents(blogPage)
-    blogPage = this.storageManager.insertComponent(blogPage, "blog", false, blogContent)
-    blogPage = this.storageManager.insertComponent(blogPage, "blogTitle", false, blog?.properties?.title || blog?.urlTitleSlug || "null")
+    blogPage = storageManager.insertAllComponents(blogPage)
+    blogPage = storageManager.insertComponent(blogPage, "blog", { componentContent: blogContent })
+    blogPage = storageManager.insertComponent(blogPage, "blogTitle", { componentContent: blog?.properties?.title || blog?.urlTitleSlug || "null" })
 
     fs.writeFileSync(path.join(PUBLIC.BLOG.DIR, `${blog?.urlTitleSlug || "null"}.html`), blogPage, 'utf8')
   }
 }
+
+export const blogManager = new BlogManager();

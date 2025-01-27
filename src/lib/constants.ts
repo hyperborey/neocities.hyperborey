@@ -26,6 +26,7 @@ export const URLS = {
 export const TEMP = {
   DIR: path.resolve("./.temp"),
   MAP: path.resolve("./.temp/map.json"),
+  SLOT_MAP: path.resolve("./.temp/slot_map.json"),
   COMPONENTS: path.resolve("./.temp/component/"),
   DATA: path.resolve("./.temp/data/")
 }

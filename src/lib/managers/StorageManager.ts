@@ -6,6 +6,14 @@ import path from 'path'
 import { buildHeader } from '../components/header';
 import { buildSidebar } from '../components/sidebar';
 
+// TODO: Короче, каков план здесь на будущее:
+// 1) Нужно сделать систему, которая будет запоминать где находятся шаблоны (например [component:sidebar])
+// 2) Нужно каждый раз при обновлении компонента, заменять старые public файлы на новые с новым компонентном
+// Это нужно для того, чтобы Watcher'ы корректно работали при изменении файлов или компонентов.
+// Для этого я думаю сделать отдельную функцию updateComponent или как-то сделать так, чтобы программа понимала что компонент изменён
+// например при перезаписи.
+// Нужно ещё придумать как записывать все места шаблонов.
+
 interface TempMap {
   data: Map<string, string>
   components: Map<string, string>
@@ -18,8 +26,10 @@ type TempCategories = "data" | "components" | "jsPaths" | "cssPaths"
 export class StorageManager {
 
   private tempMap: TempMap
+  private slotMap: Map<string, string>
 
   constructor() {
+
     if (fs.existsSync(TEMP.MAP)) {
       this.tempMap = JSON.parse(fs.readFileSync(TEMP.MAP, 'utf8'))
     } else {
@@ -29,6 +39,12 @@ export class StorageManager {
         cssPaths: new Map(),
         jsPaths: new Map()
       }
+    }
+
+    if (fs.existsSync(TEMP.SLOT_MAP)) {
+      this.slotMap = JSON.parse(fs.readFileSync(TEMP.SLOT_MAP, 'utf8'))
+    } else {
+      this.slotMap = new Map<string, string>
     }
   }
 
@@ -98,25 +114,32 @@ export class StorageManager {
 
   /**
    * Inserts a specific component into the provided content string.
-   * 
+   *
    * @param content - The string content where the component will be inserted.
    * @param componentName - The name of the component to insert.
-   * @param onlyOnce - If `true`, inserts the component only into the first matching template placeholder. Defaults to `false`.
-   * @param componentContent - If provided, inserts this content directly instead of searching for the component in the temporary directory.
+   * @param options - Optional configuration for the insertion behavior.
+   * @param options.onlyOnce - If `true`, inserts the component only into the first matching slot. Defaults to `false`.
+   * @param options.componentContent - If provided, inserts this content directly instead of searching for the component in the temporary directory.
    * @returns The updated content with the component inserted, or the original content if the component is not found and `componentContent` is not provided.
    */
-  public insertComponent(content: string, componentName: string, onlyOnce: boolean = false, componentContent: string | null = null): string {
+  public insertComponent(
+    content: string,
+    componentName: string,
+    options?: {
+      onlyOnce?: boolean,
+      componentContent?: string | null
+    }): string {
+
+    // Defaults
+    const { onlyOnce = false, componentContent = null } = options || {};
+
     componentName = componentName.toLowerCase()
-    logger.info(`Trying to find component "${componentName}"`)
-
     const component = componentContent || this.getFromTemp(componentName, 'components')
-
     if (!component) {
       logger.error(`Component "${componentName}" was not found!`)
     }
 
     let replaced: boolean = false
-
     content = content.replace(REGEX.COMPONENT, (match, p1) => {
       if (replaced && onlyOnce) {
         return match
@@ -136,6 +159,51 @@ export class StorageManager {
   public buildAllComponents() {
     this.addToTemp("header", buildHeader(), "components")
     this.addToTemp("sidebar", buildSidebar(), "components")
+  }
+
+  public registerSlots(filePath: string) {
+    if (!fs.existsSync(filePath)) {
+      logger.error(`File ${filePath} doesn't exists!`)
+      return
+    }
+
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+
+    if (fileContent === "") {
+      logger.error(`File ${filePath} is empty!`)
+      return
+    }
+
+    const slots = [...fileContent.matchAll(REGEX.COMPONENT)].map(match => match[1]);
+
+    for (let i = 0; i < slots.length; i++) {
+      const slot = slots[i];
+
+      this.slotMap.set(filePath, slot)
+
+      logger.info(this.slotMap)
+    }
+
+    fs.writeFileSync(TEMP.SLOT_MAP, JSON.stringify(this.slotMap), 'utf8')
+  }
+
+  public unregisterSlots(filePath: string) {
+
+  }
+
+  public registerStaticFiles() {
+    const staticFiles = fs.readdirSync(STATIC.DIR, { recursive: true })
+    for (let i = 0; i < staticFiles.length; i++) {
+      const file = staticFiles[i].toString();
+
+      // Basically copies all folders from STATIC to PUBLIC
+      if (!isFile(file.toString())) {
+        ensureDirExists(path.join(PUBLIC.DIR, file))
+        continue
+      }
+
+      this.registerSlots(path.join(STATIC.DIR, file))
+    }
   }
 
   public buildStatic() {
@@ -158,3 +226,5 @@ export class StorageManager {
     }
   }
 }
+
+export const storageManager: StorageManager = new StorageManager()
