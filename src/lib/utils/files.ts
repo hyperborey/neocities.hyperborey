@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { logger } from "./logging";
 
-export function isFile(pathItem: string) {
+export function isFile(pathItem: string): boolean {
   return !!path.extname(pathItem);
 }
 
@@ -52,9 +52,7 @@ export function determineExtension(content: string): string {
   try {
     JSON.parse(content)
     return '.json'
-  } catch (error) {
-
-  }
+  } catch (error) { }
 
   const HTML_REGEX = /<[\s\S]*>[\s\S]*<\/[\s\S]*>/
   if (HTML_REGEX.test(content)) {
@@ -76,3 +74,5 @@ export function getFirstWords(content: string, amount: number): string[] {
   const firstWords = words.slice(0, amount);
   return firstWords;
 }
+
+

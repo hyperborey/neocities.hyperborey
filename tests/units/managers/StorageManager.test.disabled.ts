@@ -1,11 +1,13 @@
-import { StorageManager } from "@managers/StorageManager"
+import { logger } from "@lib/utils/logging";
+import { storageManager } from "@managers/StorageManager"
 import mockFs from 'mock-fs'
 
+// Logger mock
+logger.mockTypes((typeName, type) => jest.fn());
+
 describe('StorageManager', () => {
-  let storageManager: StorageManager
 
   beforeEach(() => {
-    storageManager = new StorageManager()
     mockFs({
       ".temp/": {},
     });
@@ -52,7 +54,7 @@ describe('StorageManager', () => {
     const expected = "You need to import once [component:once]"
 
     storageManager.addToTemp("once", "once", "components")
-    const output = storageManager.insertComponent(input, "once", true)
+    const output = storageManager.insertComponent(input, "once", { onlyOnce: true })
 
     expect(output).toBe(expected)
   })

@@ -2,13 +2,10 @@ import minimist from "minimist";
 import path from "path";
 import { URL } from "url"
 
-// Unions
-export type LANG = "ru" | "en";
-
-// Urls
 const args = minimist(process.argv.slice(2));
 const isDebug = args.debug === true;
 
+// Urls
 export const BASE_URL = isDebug
   ? new URL("http://127.0.0.1:40001")
   : new URL("https://borey.neocities.org");
@@ -75,7 +72,8 @@ export const CONFIG = {
 }
 
 export const SRC = {
-  TEMPLATES: path.resolve("./src/services/components/templates")
+  COMPONENTS: path.resolve("./src/lib/components"),
+  TEMPLATES: path.resolve("./src/lib/components/templates")
 }
 
 export const REGEX = {

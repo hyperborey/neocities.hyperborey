@@ -1,4 +1,8 @@
 import { determineExtension } from "@lib/utils/files"
+import { logger } from "@lib/utils/logging";
+
+// Logger mock
+logger.mockTypes((typeName, type) => jest.fn());
 
 describe('determineExtension function', () => {
   it('should accurately determine that the string is HTML', () => {

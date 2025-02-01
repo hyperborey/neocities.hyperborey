@@ -1,5 +1,9 @@
+import { logger } from "@lib/utils/logging";
 import { getVersion } from "@lib/utils/version"
 import * as fs from "fs"
+
+// Logger mock
+logger.mockTypes((typeName, type) => jest.fn());
 
 jest.mock("fs");
 

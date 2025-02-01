@@ -6,7 +6,7 @@ module.exports = {
   },
   moduleNameMapper: {
     "^@lib/(.*)$": "<rootDir>/src/lib/$1",
-    "^@managers/(.*)$": "<rootDir>/src/services/managers/$1",
+    "^@managers/(.*)$": "<rootDir>/src/lib/managers/$1",
     "^@/(.*)$": "<rootDir>/$1"
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
